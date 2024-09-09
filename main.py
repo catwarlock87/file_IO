@@ -39,6 +39,27 @@ def upload():
         mb.showerror("Ошибка", f"Произошла ошибка: {e}")
 
 
+def show_history():
+    if not os.path.exists(history_file):
+        mb.showinfo("История загрузок", "История загрузок пуста")
+        return None
+
+    history_window = Toplevel(window)
+    history_window.title("История загрузок")
+
+    file_listbox = Listbox(history_window, width=50, height=20)
+    file_listbox.grid(row=0, column=0, padx=(10, 0), pady=10)
+
+    link_listbox = Listbox(history_window, width=50, height=20)
+    link_listbox.grid(row=0, column=1, padx=(0, 10), pady=10)
+
+    with open(history_file, "r") as f:
+        history = json.load(f)
+        for item in history:
+            file_listbox.insert(END, item["file_path"])
+            link_listbox.insert(END, item["download_link"])
+
+
 window = Tk()
 window.title("Сохранение файлов  облаке")
 window.geometry("400x200")
@@ -48,5 +69,8 @@ button.pack()
 
 entry = ttk.Entry()
 entry.pack()
+
+history_button = ttk.Button(text="Показать историю", command=show_history)
+history_button.pack()
 
 window.mainloop()
